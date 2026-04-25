@@ -8,11 +8,14 @@ app.use(express.json());
 let payments = [];
 
 const pool = new Pool({
-  user: process.env.DB_USER,
   host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 app.post("/pay", (req, res) => {

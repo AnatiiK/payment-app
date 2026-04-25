@@ -9,7 +9,7 @@ services:
 
     environment:
       DB_HOST: payment-db.czqamc00o19t.ap-southeast-2.rds.amazonaws.com
-      DB_USER: adminUser   # ⚠️ fix this
+      DB_USER: adminUser
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: payments
       DB_PORT: 5432
