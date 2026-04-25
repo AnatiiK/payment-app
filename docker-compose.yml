@@ -1,28 +1,4 @@
 services:
-  payment-db:
-    image: postgres:16
-    container_name: payment-db
-    restart: always
-
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-
-    ports:
-      - "5432:5432"
-
-    volumes:
-      - postgres_data:/var/lib/postgresql
-
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
-
-
   payment-api:
     build: .
     container_name: payment-api
@@ -31,17 +7,9 @@ services:
     ports:
       - "3000:3000"
 
-    depends_on:
-      payment-db:
-        condition: service_healthy
-
     environment:
-      DB_HOST: payment-db
-      DB_USER: ${POSTGRES_USER}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_NAME: ${POSTGRES_DB}
+      DB_HOST: payment-db.czqamc00o19t.ap-southeast-2.rds.amazonaws.com
+      DB_USER: adminUser   # ⚠️ fix this
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: payments
       DB_PORT: 5432
-
-
-volumes:
-  postgres_data:
