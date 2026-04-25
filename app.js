@@ -53,7 +53,7 @@ app.get("/payments", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  res.send("OK");
+  res.send("OK, Payment Service is healthy!");
 });
 
 app.listen(3000, () => {
