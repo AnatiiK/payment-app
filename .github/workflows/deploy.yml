@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - ECS
 
 on:
   push:
@@ -30,34 +30,33 @@ jobs:
       # 4. Build Docker image
       - name: Build image
         run: |
-          docker build -t payment-app . 
+          docker build -t payment-app .
 
-       #sd   
-
-      # 5. Tag image
-      - name: Tag image
+      # 5. Tag image with ECR registry
+      - name: Tag image for ECR
         run: |
           docker tag payment-app:latest \
           ${{ steps.login-ecr.outputs.registry }}/payment-app:latest
 
       # 6. Push image to ECR
-      - name: Push image
+      - name: Push image to ECR
         run: |
           docker push ${{ steps.login-ecr.outputs.registry }}/payment-app:latest
 
-      # 7. Deploy to EC2
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.0.3
+      # 7. Update ECS task definition
+      - name: Update ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd payment-app
+          task-definition: task-definition.json
+          container-name: payment-api
+          image: ${{ steps.login-ecr.outputs.registry }}/payment-app:latest
 
-            git fetch origin
-            git reset --hard origin/master
-
-            docker compose down
-            docker compose pull
-            docker compose up -d
+      # 8. Deploy to ECS
+      - name: Deploy to ECS Fargate
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: payment-service
+          cluster: payment-cluster
+          wait-for-service-stability: true
