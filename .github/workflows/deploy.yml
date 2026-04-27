@@ -59,4 +59,4 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: payment-service
           cluster: payment-cluster
-          wait-for-service-stability: true
+          force-new-deployment: true
