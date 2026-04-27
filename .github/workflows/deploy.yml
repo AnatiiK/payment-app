@@ -30,7 +30,9 @@ jobs:
       # 4. Build Docker image
       - name: Build image
         run: |
-          docker build -t payment-app .
+          docker build -t payment-app . 
+
+       #sd   
 
       # 5. Tag image
       - name: Tag image
