@@ -57,6 +57,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: payment-service
+          service: payment-task-service-mvo1x0x5
           cluster: payment-cluster
           force-new-deployment: true
