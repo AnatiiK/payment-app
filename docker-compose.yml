@@ -1,9 +1,8 @@
 services:
   payment-api:
-    build: .
+    image: 670173257019.dkr.ecr.ap-southeast-2.amazonaws.com/payment-app:latest
     container_name: payment-api
     restart: always
-
     ports:
       - "3000:3000"
 
