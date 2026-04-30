@@ -18,25 +18,21 @@
         }
       ],
       "environment": [
+        { "name": "DB_NAME", "value": "payments" },
+        { "name": "DB_PORT", "value": "5432" }
+      ],
+      "secrets": [
         {
           "name": "DB_HOST",
-          "value": "payment-db.czqamc00o19t.ap-southeast-2.rds.amazonaws.com"
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:670173257019:secret:/payment-app/db-credentials-sYYYHQ::DB_HOST::"
         },
         {
           "name": "DB_USER",
-          "value": "adminUser"
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:670173257019:secret:/payment-app/db-credentials-sYYYHQ::DB_USER::"
         },
         {
           "name": "DB_PASSWORD",
-          "value": "17&EC22ECS"
-        },
-        {
-          "name": "DB_NAME",
-          "value": "payments"
-        },
-        {
-          "name": "DB_PORT",
-          "value": "5432"
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:670173257019:secret:/payment-app/db-credentials-sYYYHQ::DB_PASSWORD::"
         }
       ],
       "logConfiguration": {
