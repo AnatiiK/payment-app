@@ -60,7 +60,7 @@ app.get("/health", (req, res) => {
   const now = new Date();
   const date = now.toLocaleDateString();
   const time = now.toLocaleTimeString();
-  res.send(`OK, Payment Service is healthy! Date: ${date}, Time: ${time}`);
+  res.send(`OK, Payment Service is healthy! Date: ${date}, Time: ${time}`, 'It\'s working fine!');
 });
 
 app.listen(3000, () => {
