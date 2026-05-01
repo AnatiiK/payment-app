@@ -3,12 +3,12 @@
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "512",
-  "memory": "1024",
+  "memory": "2048",
   "executionRoleArn": "arn:aws:iam::670173257019:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
       "name": "payment-api",
-      "image": "670173257019.dkr.ecr.ap-southeast-2.amazonaws.com/payment-app:latest",
+      "image": "<IMAGE_URI>",
       "essential": true,
       "portMappings": [
         {
@@ -24,15 +24,15 @@
       "secrets": [
         {
           "name": "DB_HOST",
-          "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:670173257019:secret:/payment-app/db-credentials-sYYYHQ::DB_HOST::"
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:670173257019:secret:/payment-app/db-credentials-sYYYHQ:DB_HOST::"
         },
         {
           "name": "DB_USER",
-          "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:670173257019:secret:/payment-app/db-credentials-sYYYHQ::DB_USER::"
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:670173257019:secret:/payment-app/db-credentials-sYYYHQ:DB_USER::"
         },
         {
           "name": "DB_PASSWORD",
-          "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:670173257019:secret:/payment-app/db-credentials-sYYYHQ::DB_PASSWORD::"
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:670173257019:secret:/payment-app/db-credentials-sYYYHQ:DB_PASSWORD::"
         }
       ],
       "logConfiguration": {

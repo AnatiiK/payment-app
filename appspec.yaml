@@ -1,0 +1,22 @@
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: <TASK_DEFINITION>
+        LoadBalancerInfo:
+          ContainerName: "payment-api"
+          ContainerPort: 3000
+        PlatformVersion: "LATEST"
+        NetworkConfiguration:
+          AwsvpcConfiguration:
+            Subnets:
+              - "subnet-057502b8179446368"
+              - "subnet-0e7953be6b25911fb"
+              - "subnet-0acb0cdb07fa59ca4"
+            SecurityGroups:
+              - "sg-02557f4ddaf87fa15"
+            AssignPublicIp: "ENABLED"
+Hooks:
+  - BeforeAllowTraffic: null
+  - AfterAllowTraffic: null
