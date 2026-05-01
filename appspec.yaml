@@ -17,6 +17,3 @@ Resources:
             SecurityGroups:
               - "sg-02557f4ddaf87fa15"
             AssignPublicIp: "ENABLED"
-Hooks:
-  - BeforeAllowTraffic: null
-  - AfterAllowTraffic: null
