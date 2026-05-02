@@ -16,5 +16,6 @@ COPY . .
 # Expose API port
 EXPOSE 3000
 
+#and create a new file called Dockerfile.dev
 # Start the app
 CMD ["node", "app.js"]
