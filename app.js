@@ -46,8 +46,8 @@ app.post("/pay", (req, res) => {
 app.get("/payments", (req, res) => {
   pool.query("SELECT * FROM payments", (err, result) => {
     if (err) {
-      console.error("Error fetching payments from database:", err);
-      res.status(500).json({ error: "Internal server error" });
+      console.error("Error fetching payments from database: by error", err);
+      res.status(500).json({ error: "Internal server error by error" });
       return;
     }
 
