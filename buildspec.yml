@@ -4,13 +4,17 @@ env:
   variables:
     AWS_DEFAULT_REGION: ap-southeast-2
     ECR_REPO_NAME: payment-app
-    CONTAINER_NAME: payment-api
-    IMAGE_TAG: latest
+    IMAGE_TAG: v1.0.0
 
 phases:
   pre_build:
     commands:
-      - echo "Logging in to Amazon ECR..."
+      - echo "=== PHASE 1 - DEPENDENCY SCANNING ==="
+      - npm audit --audit-level=high
+      - echo "=== PHASE 2 - SECRET DETECTION ==="
+      - pip3 install detect-secrets
+      - detect-secrets scan --baseline .secrets.baseline
+      - echo "=== PHASE 3 - ECR LOGIN ==="
       - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
       - ECR_REGISTRY=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - IMAGE_URI=$ECR_REGISTRY/$ECR_REPO_NAME:$IMAGE_TAG
@@ -18,23 +22,26 @@ phases:
 
   build:
     commands:
-      - echo "Building Docker image..."
-      - docker build -t $IMAGE_URI .
+      - echo "=== PHASE 4 - SAST SCANNING ==="
+      - pip3 install semgrep
+      - semgrep scan --config=auto --error --json > semgrep-results.json || true
+      - echo "=== PHASE 5 - DOCKER BUILD ==="
+      - docker build --no-cache --pull -t $IMAGE_URI .
+      - echo "=== PHASE 6 - CONTAINER SCANNING ==="
+      - wget -qO- https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - trivy image --exit-code 1 --severity CRITICAL --no-progress $IMAGE_URI
+      - trivy image --exit-code 0 --severity HIGH,MEDIUM --no-progress $IMAGE_URI > trivy-results.txt
 
   post_build:
     commands:
-      - echo "Pushing image to ECR..."
+      - echo "=== PHASE 7 - PUSH TO ECR ==="
       - docker push $IMAGE_URI
-      - echo "Writing imagedefinitions.json for staging..."
-      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $IMAGE_URI > imagedefinitions.json
-      - echo "Writing imageDetail.json for production CodeDeploy..."
+      - echo "=== PHASE 8 - WRITE ARTIFACTS ==="
       - printf '{"ImageURI":"%s"}' $IMAGE_URI > imageDetail.json
-      - cat imagedefinitions.json
-      - cat imageDetail.json
+      - echo "=== BUILD COMPLETE ==="
 
 artifacts:
   files:
-    - imagedefinitions.json
     - imageDetail.json
-    - task-definition.json
-    - appspec.yaml
+    - trivy-results.txt
+    - semgrep-results.json
